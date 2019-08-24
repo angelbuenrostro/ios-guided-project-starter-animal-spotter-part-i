@@ -16,9 +16,35 @@ enum HTTPMethod: String {
 
 class APIController {
     
-    private let baseUrl = URL(string: "https://lambdaanimalspotter.vapor.cloud/api")!
+    private let baseURL = URL(string: "https://lambdaanimalspotter.vapor.cloud/api")!
+    
+    var bearer: Bearer?
     
     // create function for sign up
+    func signUp(with user: User, completion: @escaping (Error?) -> ()) {
+        let signUpURL = baseURL.appendingPathComponent("users/signup")
+        
+        var request = URLRequest(url: signUpURL)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let jsonEncoder = JSONEncoder()
+        do {
+            let jsonData = try jsonEncoder.encode(user)
+            request.httpBody = jsonData
+        } catch {
+            print("Error encoding user object: \(error.localizedDescription)")
+            completion(error)
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { (_, response, error) in
+            if let response = response as? HTTPURLResponse,
+                response.statusCode != 200 {
+                
+            }
+        }.resume()
+    }
     
     // create function for sign in
     
