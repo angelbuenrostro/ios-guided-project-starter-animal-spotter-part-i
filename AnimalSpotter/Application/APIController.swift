@@ -41,8 +41,18 @@ class APIController {
         URLSession.shared.dataTask(with: request) { (_, response, error) in
             if let response = response as? HTTPURLResponse,
                 response.statusCode != 200 {
-                
+                completion(NSError(domain: "", code: response.statusCode, userInfo: nil))
+                return
             }
+            
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // signup succeeded so pass in nil for the error
+            completion(nil)
+            
         }.resume()
     }
     
