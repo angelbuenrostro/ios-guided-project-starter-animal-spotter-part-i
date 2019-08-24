@@ -49,17 +49,28 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     if let error = error {
                         print("Error occured during sign up: \(error.localizedDescription)")
                     } else {
-                        let alertController = UIAlertController(title: "Sign Up Successful", message: "Now please log in.", preferredStyle: .alert)
-                        let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alertController.addAction(alertAction)
-                        self.present(alertController, animated: true, completion: {
-                            self.loginTypeSegmentedControl.selectedSegmentIndex = 1
-                            self.signInButton.setTitle("Sign In", for: .normal)
-                        })
+                        DispatchQueue.main.async {
+                            let alertController = UIAlertController(title: "Sign Up Successful", message: "Now please log in.", preferredStyle: .alert)
+                            let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                            alertController.addAction(alertAction)
+                            self.present(alertController, animated: true, completion: {
+                                self.loginTypeSegmentedControl.selectedSegmentIndex = 1
+                                self.signInButton.setTitle("Sign In", for: .normal)
+                            })
+                        }
                     }
                 }
             } else {
-                
+                // Sign in
+                apiController.signIn(with: user) { (error) in
+                    if let error = error {
+                        print("Error occurred during sign up:\(error.localizedDescription)")
+                    } else {
+                        DispatchQueue.main.async {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
             }
         }
         
